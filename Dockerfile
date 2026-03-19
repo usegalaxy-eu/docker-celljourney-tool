@@ -1,14 +1,14 @@
-# Base image with PyTorch + CUDA 12.1 + cuDNN 8 runtime
-FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+FROM python:3.11.7-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+WORKDIR /app
 
-# Use a non-root user for security (optional)
-RUN useradd -ms /bin/bash appuser
-USER appuser
-WORKDIR /home/appuser
+COPY . .
 
-# Install your tool from PyPI or any other way ...
-RUN pip install --no-cache-dir doclayout-yolo==0.0.4
+RUN pip install --no-cache-dir -r requirements.txt
 
+ENV HOST=0.0.0.0
+ENV PORT=8080
+
+EXPOSE 8080
+
+CMD ["python", "celljourney.py", "--suppressbrowser"]

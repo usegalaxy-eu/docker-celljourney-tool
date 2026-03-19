@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Tutorials - Cell Journey</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Tutorials";
+        var mkdocs_page_input_path = "tutorials.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="index.html" class="icon icon-home"> Cell Journey
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Tutorials</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#example-datasets">Example datasets</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#generating-3d-data">Generating 3D Data</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#reducing-the-file-size">Reducing the file size</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#lineage-tracing">Lineage tracing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#recreating-article-figures">Recreating article figures</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#pancreatic-endocrinogenesis">Pancreatic endocrinogenesis</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#bone-marrow-mononuclear-progenitors">Bone marrow mononuclear progenitors</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#lineage-tracing_1">Lineage tracing</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cell Journey</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html" class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Tutorials</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="tutorials">Tutorials</h2>
+<h3 id="example-datasets">Example datasets</h3>
+<ul>
+<li><a href="https://github.com/TabakaLab/CellJourney/blob/main/datasets/hair_folicle.csv">Hair folicle</a></li>
+<li><a href="https://github.com/TabakaLab/CellJourney/blob/main/datasets/pancreas.h5ad">Mouse pancreatic endocrinogenesis</a></li>
+<li><a href="https://github.com/TabakaLab/CellJourney/blob/main/datasets/bone_marrow.h5mu">Human bone marrow mononuclear cell progenitors</a></li>
+</ul>
+<h3 id="generating-3d-data">Generating 3D Data</h3>
+<p>To generate example data, we will use the built-in pancreas dataset from <a href="https://scvelo.readthedocs.io">scvelo</a>. The process of obtaining the velocity vector components is detailed in the scvelo tutorials. We will focus on one key difference that enables generating three-dimensional data.</p>
+<pre><code>import scanpy as sc
+import scvelo as scv
+</code></pre>
+<pre><code>adata = scv.datasets.pancreas()
+adata
+</code></pre>
+<pre><code>AnnData object with n_obs × n_vars = 3696 × 27998
+    obs: 'clusters_coarse', 'clusters', 'S_score', 'G2M_score'
+    var: 'highly_variable_genes'
+    uns: 'clusters_coarse_colors', 'clusters_colors', 'day_colors', 'neighbors', 'pca'
+    obsm: 'X_pca', 'X_umap'
+    layers: 'spliced', 'unspliced'
+    obsp: 'distances', 'connectivities'
+</code></pre>
+<p>The dataset already contains a UMAP embedding, but it is two-dimensional.</p>
+<pre><code>adata.obsm[&quot;X_umap&quot;].shape
+</code></pre>
+<pre><code>(3696, 2)
+</code></pre>
+<p>Using <a href="https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.umap.html">scanpy.tl.umap</a>, we will create a three-dimensional UMAP embedding instead. This will allow us to represent the cells in 3D space and the velocity vectors will be determined according to the dimensionality of the specified embedding.</p>
+<pre><code>sc.tl.umap(adata, n_components = 3)
+adata.obsm[&quot;X_umap&quot;].shape
+</code></pre>
+<pre><code>(3696, 3)
+</code></pre>
+<pre><code>scv.pp.filter_genes(adata, min_shared_counts=20)
+scv.pp.normalize_per_cell(adata)
+scv.pp.filter_genes_dispersion(adata, n_top_genes=2000)
+scv.pp.log1p(adata)
+adata
+</code></pre>
+<pre><code>AnnData object with n_obs × n_vars = 3696 × 2000
+    obs: 'clusters_coarse', 'clusters', 'S_score', 'G2M_score', 'initial_size_unspliced', 'initial_size_spliced', 'initial_size', 'n_counts'
+    var: 'highly_variable_genes', 'gene_count_corr', 'means', 'dispersions', 'dispersions_norm', 'highly_variable'
+    uns: 'clusters_coarse_colors', 'clusters_colors', 'day_colors', 'neighbors', 'pca', 'umap', 'log1p'
+    obsm: 'X_pca', 'X_umap'
+    layers: 'spliced', 'unspliced'
+    obsp: 'distances', 'connectivities'
+</code></pre>
+<pre><code>scv.tl.velocity_graph(adata)
+scv.tl.velocity(adata)
+scv.tl.velocity_embedding(adata, basis=&quot;umap&quot;)
+adata
+</code></pre>
+<pre><code>AnnData object with n_obs × n_vars = 3696 × 2000
+    obs: 'clusters_coarse', 'clusters', 'S_score', 'G2M_score', 'initial_size_unspliced', 'initial_size_spliced', 'initial_size', 'n_counts', 'velocity_self_transition'
+    var: 'highly_variable_genes', 'gene_count_corr', 'means', 'dispersions', 'dispersions_norm', 'highly_variable', 'velocity_gamma', 'velocity_qreg_ratio', 'velocity_r2', 'velocity_genes'
+    uns: 'clusters_coarse_colors', 'clusters_colors', 'day_colors', 'neighbors', 'pca', 'umap', 'log1p', 'velocity_params', 'velocity_graph', 'velocity_graph_neg'
+    obsm: 'X_pca', 'X_umap', 'velocity_umap'
+    layers: 'spliced', 'unspliced', 'Ms', 'Mu', 'velocity', 'variance_velocity'
+    obsp: 'distances', 'connectivities'
+</code></pre>
+<p>The velocity vectors have been successfully determined and are located in <code>obsm</code> as <code>velocity_umap</code>.</p>
+<h3 id="reducing-the-file-size">Reducing the file size</h3>
+<p>Dash, which is used to create Cell Journey, has its limitations. Loading very large files can be automatically interrupted. Therefore, files for the Cell Journey analysis should be stripped of unnecessary data, especially large dense matrices. For the pancreas dataset it is sufficient to limit the data to what is contained in <code>var</code>, <code>obs</code>, <code>obsm</code>, and the sparse <code>X</code> matrix.</p>
+<pre><code>import scanpy as sc
+import os
+</code></pre>
+<pre><code>adata_slim = sc.AnnData(X=adata.X, obs=adata.obs, var=adata.var, obsm=adata.obsm)
+adata_slim.write(&quot;pancreas_slim.h5ad&quot;)
+</code></pre>
+<p>For comparison, we can also save the entire adata dataset.</p>
+<pre><code>adata.write(&quot;pancreas_full.h5ad&quot;)
+</code></pre>
+<pre><code>full_dataset = os.stat(&quot;pancreas_full.h5ad&quot;)
+full_dataset_size = full_dataset.st_size / (1024 ** 2)
+slim_dataset = os.stat(&quot;pancreas_slim.h5ad&quot;)
+slim_dataset_size = slim_dataset.st_size / (1024 ** 2)
+print(f&quot;Full dataset: {full_dataset_size:.2f} MB, slim dataset: {slim_dataset_size:.2f} MB&quot;)
+</code></pre>
+<pre><code>Full dataset: 1756.84 MB, slim dataset: 14.64 MB
+</code></pre>
+<h3 id="lineage-tracing">Lineage tracing</h3>
+<p>In this section, we will prepare a dataset designed for cell lineage tracing. The data used originates from the study by <a href="https://www.science.org/doi/10.1126/science.aaw3381">C. Weinreb <em>et al.</em> (2020)</a>. The original files are hosted in <a href="https://github.com/AllonKleinLab/paper-data/tree/master/Lineage_tracing_on_transcriptional_landscapes_links_state_to_fate_during_differentiation#experiment-1-in-vitro-differentiation-time-course">Allon Klein’s lab GitHub repository</a>.</p>
+<p>All the required files can be downloaded automatically using the script provided below. Please ensure that you update the <code>my_path</code> variable to reflect your local directory structure.</p>
+<pre><code>import scanpy as sc
+from urllib.request import urlretrieve
+from pathlib import Path
+from scipy.io import mmread
+from pandas import read_csv
+</code></pre>
+<pre><code>url_path = 'https://kleintools.hms.harvard.edu/paper_websites/state_fate2020/'
+my_path = '/my/local/path/'
+
+files = {
+    'counts': 'stateFate_inVitro_normed_counts.mtx.gz',
+    'genes': 'stateFate_inVitro_gene_names.txt.gz',
+    'metadata': 'stateFate_inVitro_metadata.txt.gz',
+    'clones': 'stateFate_inVitro_clone_matrix.mtx.gz'
+}
+</code></pre>
+<p>Automated download:</p>
+<pre><code>for filename in files.values():
+    urlretrieve(f'{url_path}{filename}', 
+                f'{my_path}{filename}')
+</code></pre>
+<p>Once the download is complete, we load the counts, gene names, and metadata into an AnnData object.</p>
+<pre><code>X = mmread(Path(my_path, files['counts'])).tocsr()
+genes = read_csv(Path(my_path, files['genes']), header=None, names=['gene_symbol'])
+meta = read_csv(Path(my_path, files['metadata']), sep='\t')
+
+adata = sc.AnnData(X=X)
+adata.var_names = genes['gene_symbol'].values
+adata.obs = meta
+adata
+</code></pre>
+<pre><code>AnnData object with n_obs × n_vars = 130887 × 25289
+    obs: 'Library', 'Cell barcode', 'Time point', 'Starting population', 'Cell type annotation', 'Well', 'SPRING-x', 'SPRING-y'
+</code></pre>
+<p>We then integrate the clonal information into the obsm layer named <code>Clones</code>:</p>
+<pre><code>clones = mmread(Path(my_path, files['clones'])).tocsc()
+adata.obsm['Clones'] = clones
+</code></pre>
+<p>Next, we process the dataset following a standard Scanpy workflow. For a deeper dive into these steps, please refer to the <a href="https://scanpy.readthedocs.io/en/stable/">Scanpy documentation</a>. Please remember that the umap function must have the <code>n_components</code> parameter set to 3.</p>
+<pre><code>sc.pp.log1p(adata)
+sc.pp.highly_variable_genes(adata, n_top_genes=2000)
+sc.tl.pca(adata)
+sc.pp.neighbors(adata, n_neighbors=20, n_pcs=30)
+sc.tl.umap(adata, n_components=3)
+</code></pre>
+<pre><code>AnnData object with n_obs × n_vars = 130887 × 25289
+    obs: 'Library', 'Cell barcode', 'Time point', 'Starting population', 'Cell type annotation', 'Well', 'SPRING-x', 'SPRING-y'
+    var: 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
+    uns: 'log1p', 'hvg', 'pca', 'neighbors', 'umap'
+    obsm: 'Clones', 'X_pca', 'X_umap'
+    varm: 'PCs'
+    obsp: 'distances', 'connectivities'
+</code></pre>
+<p>To ensure a seamless experience and optimal performance, we recommend removing any auxiliary data or dense matrices not utilized by Cell Journey.</p>
+<pre><code>del adata.obsm['X_pca']
+del adata.uns
+del adata.obsp
+del adata.varp
+adata
+</code></pre>
+<pre><code>AnnData object with n_obs × n_vars = 130887 × 25289
+    obs: 'Library', 'Cell barcode', 'Time point', 'Starting population', 'Cell type annotation', 'Well', 'SPRING-x', 'SPRING-y'
+    obsm: 'Clones', 'X_umap'
+</code></pre>
+<p>Additionally, we can rename cell types. The mapping is based on <a href="https://www.science.org/doi/10.1126/science.aaw3381#sec-1">the results section of the aforementioned article</a>.</p>
+<pre><code>mapping = {
+    'Undifferentiated': 'Undifferentiated',
+    'Monocyte': 'Monocyte',
+    'Neutrophil': 'Neutrophil',
+    'Mono': 'Monocytes',
+    'Baso': &quot;Basophil&quot;,
+    'Erythroid': 'Erythrocyte',
+    'Mast': 'Mast cell',
+    'Meg': 'Megakaryocyte',
+    'Ccr7_DC': 'Ccr7+ migDC',
+    'Lymphoid': 'Lymphoid precursor',
+    'Eos': 'Eosinophil',
+    'pDC': 'pDC'
+}
+
+adata.obs['Cell type annotation'] = adata.obs['Cell type annotation'].map(mapping)
+</code></pre>
+<p>Finally, save the processed dataset</p>
+<pre><code>adata.write(Path(my_path, 'clonal_data.h5ad'))
+</code></pre>
+<h3 id="recreating-article-figures">Recreating article figures</h3>
+<h4 id="pancreatic-endocrinogenesis">Pancreatic endocrinogenesis</h4>
+<ol>
+<li>Upload data and select coordinates: Load <code>pancreas.h5ad</code> provided in the <a href="https://github.com/TabakaLab/CellJourney/tree/main/datasets">datasets directory</a>.</li>
+<li>Upload data and select coordinates: Select <em>X_umap(1)</em>, <em>X_umap(2)</em>, and <em>X_umap(3)</em> as X, Y, and Z coordinates. </li>
+<li>Upload data and select coordinates: Select <em>velocity_umap (1)</em>, <em>velocity_umap (2)</em>, <em>velocity_umap (3)</em> as U, V, and W coordinates.</li>
+<li>Upload data and select coordinates: Click <code>Submit selected coordinates</code>.</li>
+<li>Upload data and select coordinates: Set <code>Target sum</code> to 10000 and click <code>Lognormalize</code>.</li>
+<li>Global plot configuration: change <code>Axes</code> switch to <code>Hide</code>.</li>
+</ol>
+<p><strong>Figure 1 B</strong></p>
+<ol>
+<li>Scatter plot: select clusters from the <code>Select feature</code> dropdown menu.</li>
+<li>Scatter plot: change <code>Use custom color palette</code> to ON, and paste #1DACD6 #FFAACC #66FF66 #0066FF #FF7A00 #FC2847 #FDFF00 #000000 into the <code>Space-separated list of color hex values (max 20 colors)</code> field.</li>
+<li>Streamline plot: change <code>Color scale</code> to Greys, and <code>Line width</code> to 10.0.</li>
+<li>Cell Journey (trajectory): click <code>Generate grid</code>.</li>
+<li>Cell Journey (trajectory): set <code>Number of clusters</code> to 8, <code>Number of automatically selected features</code> to 200, <code>Tube segments</code> to 25, <code>Features activities shown in heatmap</code> to Relative to first segment, and <code>Highlight selected cells</code> to Don't highlight.</li>
+<li>Click on a random cell from the Ngn3 low EP cluster. Try a few cells within the suggested area if the first one didn't result in an appropriate trajectory.</li>
+</ol>
+<p><strong>Figure 2 A (SCATTER PLOT)</strong></p>
+<ol>
+<li>Scatter plot: select <code>clusters_coarse</code> from the <code>Select feature</code> dropdown menu.</li>
+<li>Global plot configuration: change <code>Legend: horizontal position</code> and <code>Legend: vertical position</code> to obtain an optimal position, e.g. 0.50 and 0.30 accordingly.</li>
+</ol>
+<p><strong>Figure 2 A (CONE PLOT)</strong></p>
+<ol>
+<li>Cone plot: select <code>rainbow</code> from the <code>Color scale</code> dropdown menu.</li>
+<li>Cone plot: set <code>Cone size</code> to <code>12.00</code>. </li>
+</ol>
+<p><strong>Figure 2 A (STREAMLINES)</strong></p>
+<ol>
+<li>Streamline plot: set <code>Grid size</code> to 20, <code>Number of steps</code> to 500, <code>Step size</code> to 2.00, and <code>Difference threshold</code> to 0.001.</li>
+<li>Streamline plot: click <code>Generate trajectories (streamlines and streamlets)</code>.</li>
+<li>Streamline plot: uncheck <code>Combine trajectories with the scatter plot</code> switch.</li>
+<li>Streamline plot: change <code>Line width</code> to 4.0.</li>
+</ol>
+<p><strong>Figure 2 A (STREAMLETS)</strong></p>
+<ol>
+<li>Repeat the steps for Figure C (STREAMLINES).</li>
+<li>Streamline plot: change <code>Show streamlines</code> to <code>Show streamlets</code>.</li>
+<li>Streamline plot: set <code>Streamlets length</code> to 10.</li>
+<li>Streamline plot: click <code>Update streamlets</code>.</li>
+<li>Streamline plot: change <code>Color scale</code> to Reds.</li>
+</ol>
+<p><strong>Figure 2 A (SCATTER + VOLUME PLOT)</strong></p>
+<ol>
+<li>Scatter plot: input Serping1 in the <code>Modality feature</code></li>
+<li>Scatter plot: select Turbo from the <code>Built-in continuous color scale</code> dropdown menu. </li>
+<li>Scatter plot: change <code>Add volume plot to continuous feature</code> and <code>Single color scater when volume is plotted</code> to ON. </li>
+<li>Scatter plot: select the second color from the left in the second row of the suggested colors (light grey box).</li>
+<li>Scatter plot: select linear from the <code>Radial basis function</code> dropdown menu.</li>
+<li>Scatter plot: change <code>Point size</code> to 1.00, <code>Volume plot transparency cut-off quantile</code> to 50, <code>Volume plot opacity</code> to 0.06, <code>Gaussian filter standard deviation r</code> to 2.00, and <code>Radius scaler</code> to 1.300. </li>
+</ol>
+<p><strong>Figure 2 A (SCATTER + STREAMLINES)</strong></p>
+<ol>
+<li>Repeat the steps for Figure C (STREAMLINES).</li>
+<li>Streamline plot: change <code>Combine trajectories with the scatter plot</code> to ON.</li>
+<li>Streamline plot: set <code>Subset current number of trajectories</code> to 70 and click <code>Confirm</code>.</li>
+<li>Scatter plot: change <code>Built-in continuous color scale</code> to Balance.</li>
+</ol>
+<h4 id="bone-marrow-mononuclear-progenitors">Bone marrow mononuclear progenitors</h4>
+<ol>
+<li>Upload data and select coordinates: Load <code>bone_marrow.h5ad</code> provided in the <a href="https://github.com/TabakaLab/CellJourney/tree/main/datasets">datasets directory</a>.</li>
+<li>Upload data and select coordinates: Select <em>RNA: X_umap(1)</em>, <em>RNA: X_umap(2)</em>, and <em>RNA: X_umap(3)</em> as X, Y, and Z coordinates. </li>
+<li>Upload data and select coordinates: Select <em>RNA: velocity_umap(1)</em>, <em>RNA: velocity_umap(2)</em>, and <em>RNA: velocity_umap(3)</em> as U, V, and W coordinates.</li>
+<li>Upload data and select coordinates: Click <code>Submit selected coordinates</code>.</li>
+<li>Upload data and select coordinates: Select RNA modality, set <code>Target sum</code> to 10000, and click <code>Lognormalize</code>. Select ADT modality, set <code>Target sum</code> to 10000, and click <code>Lognormalize</code>.</li>
+<li>Global plot configuration: change <code>Axes</code> switch to <code>Hide</code>.</li>
+</ol>
+<p><strong>Figure 2 B (SCATTER PLOT + TRAJECTORY + TUBE CELLS)</strong></p>
+<ol>
+<li>Global plot configuration: change <code>Legend</code> switch to Hide.</li>
+<li>Scatter plot: change <code>Point size</code> to 1.00.</li>
+<li>Scatter plot: select second color from the left in the second row of the suggested colors (light grey box).</li>
+<li>Streamline plot: set <code>Grid size</code> to 25, <code>Number of steps</code> to 500, and <code>Difference threshold</code> to 0.001, and click <code>Generate trajectories (streamlines and streamlets)</code>.</li>
+<li>Streamline plot: change <code>Show streamlines</code> to <code>Show streamlets</code>, set <code>Stremlets length</code> to 10, and click <code>Update streamlets</code>.</li>
+<li>Streamline plot: change <code>Color scale</code> to Jet.</li>
+<li>Scatter plot: select ADT from the <code>Modality</code> dropdown menu and input CD34 in the field below.</li>
+<li>Scatter plot: select Reds from the <code>Built-in continuous color scale</code> field.</li>
+<li>Scatter plot: change <code>Add volume plot to continuous feature</code> and <code>Single color scater when volume is plotted</code> to ON. </li>
+<li>Scatter plot: set <code>Volume plot transparency cut-off quantile</code> to 55, <code>Volume plot opacity</code> to 0.04, <code>Gaussian filter standard deviation multiplier</code> to 3.00, and <code>Radius scaler</code> to 1.300. </li>
+</ol>
+<p><strong>Figure 2 B (SCATTER + STREAMLETS + VOLUME PLOT)</strong></p>
+<ol>
+<li>Streamline plot: change <code>Lide width</code> to 5.0.</li>
+<li>Cell Journey (trajectory): click <code>Generate grid</code>.</li>
+<li>Cell Journey (trajectory): set <code>Tube segments</code> to 5 and <code>Highlight selected cells</code> to Each segment separately.</li>
+<li>Global plot configuration: change <code>Legend: horizontal position</code> and <code>Legend: vertical position</code> to obtain optimal position, e.g. to 0.20 in both cases.</li>
+</ol>
+<p><strong>Figure 2 B (RNA MODALITY HEATMAP)</strong></p>
+<ol>
+<li>Cell Journey (trajectory): click <code>Generate grid</code>.</li>
+<li>Cell Journey (trajectory): set <code>Step size</code> to 2.00, <code>Tube segments</code> to 20, <code>Number of clusters</code> to 8, <code>Number of automatically selected features</code> to 50, and <code>Heatmap color scale</code> to Inferno.</li>
+<li>Scatter plot: select RNA from the <code>Modality</code> dropdown menu.</li>
+<li>Click on a random cell from the center the point cloud. Try few cells within the suggested area if the first one didn't result in an appropriate trajectory.</li>
+<li>Cell Journey (trajectory): select Box plot from the <code>Plot type</code> dropdown menu, set <code>Trendline</code> to Median-based cubic spline.</li>
+<li>Find HBB gene by hovering the heatmap. Click on any segment to obtain figure <strong>RNA: HBB ALONG TRAJECTORY</strong>.</li>
+</ol>
+<p><strong>Figure 2 B (ADT MODALITY HEATMAP)</strong></p>
+<ol>
+<li>Cell Journey (trajectory): click <code>Generate grid</code>.</li>
+<li>Cell Journey (trajectory): set <code>Step size</code> to 2.00, <code>Tube segments</code> to 20, <code>Number of clusters</code> to 3, <code>Number of automatically selected features</code> to 10, and <code>Heatmap color scale</code> to Inferno.</li>
+<li>Scatter plot: select ADT from the <code>Modality</code> dropdown menu.</li>
+<li>Click on a random cell from the center of the point cloud. Try a few cells within the suggested area if the first one didn't result in an appropriate trajectory.</li>
+<li>Cell Journey (trajectory): select Box plot from the <code>Plot type</code> dropdown menu, set <code>Trendline</code> to Median-based cubic spline.</li>
+<li>Find CD34 gene by hovering the heatmap. Click on any segment to obtain figure <strong>(ADT: CD34 ALONG TRAJECTORY</strong>.</li>
+</ol>
+<h4 id="lineage-tracing_1">Lineage tracing</h4>
+<ol>
+<li>Upload data and select coordinates: Load the <code>clonal_data.h5ad</code> file generated in the Lineage tracing tutorial.</li>
+<li>Upload data and select coordinates: Select <em>X_umap(1)</em>, <em>X_umap(2)</em>, and <em>X_umap(3)</em> as X, Y, and Z coordinates. </li>
+<li>Skip U, V, and W coordinates. Cell Journey will display a warning <code>Please select all the required columns</code>. This can be ignored, as trajectories are not integrated in this case.</li>
+<li>Upload data and select coordinates: Click <code>Submit selected coordinates</code>. </li>
+<li>Global plot configuration: change <code>Axes</code> switch to <code>Hide</code>.</li>
+</ol>
+<p><strong>Figure 3 A</strong></p>
+<ol>
+<li>Scatter plot: select Cell type annotation from the <code>Select feature</code> dropdown menu.</li>
+<li>Scatter plot: change <code>Use custom color palette</code> to ON, and paste following hex codes into the <code>Space-separated list of color hex values (max 20 colors)</code> field: #000000 #FF6666 #9933FF #E085C2 #9EE09E #FF8000 #F0C1E1 #B3FF66 #B30000 #FFBF80 #604020.</li>
+</ol>
+<p><strong>Figure 3 B</strong></p>
+<ol>
+<li>Scatter plot: change <code>Use custom color palette</code> to ON, and paste #000000 #1F75FE #FF6666 into the <code>Space-separated list of color hex values (max 20 colors)</code> field.</li>
+<li>Scatter plot: set <code>Point size</code> to 1.0.</li>
+<li>Scatter plot (clonal data): change <code>Click on a cell to find the clones</code> to ON. </li>
+<li>Click on a cells at the edge of the neutrophil cluster. You may need to try a few times to obtain the same results as shown in the article.</li>
+</ol>
+<p><strong>Figure 3 C</strong></p>
+<ol>
+<li>Follow the steps from Figure 3 B.</li>
+<li>Scatter plot: select Solar fro the <code>Built-in continuous color scale</code></li>
+<li>Scatter plot: switch <code>Reverse order of color scale</code> to ON.</li>
+<li>Scatter plot: select the color black from the color picker.</li>
+<li>Scatter plot (volume plot): set <code>Volume plot transparency cut-off quantile</code> to 15, <code>Volume plot opacity</code> to 0.20, <code>Radial basis function</code> to gaussian, Smoothing level to 100, <code>Gaussian filter standard deviation multiplier</code> to 1, and <code>Grid size</code> to 40.</li>
+<li>Switch <code>Add volume plot to continuous feature</code> and <code>Single color scatter when volume is plotted</code> to ON.</li>
+<li>Click on a cell at the edge of the neutrophil cluster. You may need to try a few times to reproduce the article's results. Note that when the volume plot in ON, Cell Journey will not respond to clicking on cells. You must switch <code>Add volume plot to continuous feature</code> to OFF to retry selection.</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="support.html" class="btn btn-neutral float-right" title="Support">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="usage.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="support.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
