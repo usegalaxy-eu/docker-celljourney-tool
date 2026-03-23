@@ -601,56 +601,61 @@ def export_results(_, scatter_plot, cone_plot, trajectories_plot, single_traject
     global data_type
     global h5_file
 
-    failed_general_message = dmc.Text(
-        children=f'Failed to save {selected_data}. \
-            Please make sure your data is in .h5ad or .h5mu format.',
-        weight=WEIGHT_TEXT,
-        color=RED_ERROR_TEXT,
-        style={'marginTop': 10})
+    if ctx.triggered_id != 'submit_download':
+        raise PreventUpdate
 
-    if ctx.triggered_id == 'submit_download':
-        try:
-            fig_dict = {
-                    'Figure - Scatter plot': scatter_plot,
-                    'Figure - Cone plot': cone_plot,
-                    'Figure - Trajectories (streamlines/streamlets)': trajectories_plot,
-                    'Figure - Single trajectory (Cell Journey)': single_trajectory_plot,
-                    'Figure - Heatmap (Cell Journey)': heatmap_plot,
-                }
+    # Sanitize filename
+    safe_name = selected_data.replace(' ', '_').replace('(', '').replace(')', '').replace('/', '-')
 
-            if selected_data.startswith('Figure'):
-                fig = go.Figure(fig_dict[selected_data])
-                if format == 'html':
-                    figure_bytes = fig.to_html(full_html=True, include_plotlyjs='cdn').encode('utf-8')
-                else:
-                    figure_bytes = fig.to_image(format=format, scale=scale, width=width, height=height)
+    try:
+        fig_dict = {
+            'Figure - Scatter plot': scatter_plot,
+            'Figure - Cone plot': cone_plot,
+            'Figure - Trajectories (streamlines/streamlets)': trajectories_plot,
+            'Figure - Single trajectory (Cell Journey)': single_trajectory_plot,
+            'Figure - Heatmap (Cell Journey)': heatmap_plot,
+        }
 
-                return dcc.send_bytes(lambda f: f.write(figure_bytes), selected_data)
+        if selected_data.startswith('Figure'):
+            fig = go.Figure(fig_dict[selected_data])
+            if format == 'html':
+                html_str = fig.to_html(full_html=True, include_plotlyjs='cdn')
+                return dcc.send_string(html_str, safe_name + '.html')
             else:
-                if (data_type == 'h5mu' and modality is not None) or (data_type == 'h5ad'):
-                    if selected_data == 'Table - Heatmap expression':
-                        try:
-                            heatmap_data = pd.read_json(heatmap)
-                        except:
-                            raise PreventUpdate
-                        return dcc.send_data_frame(heatmap_data.iloc[::-1].to_csv, selected_data + ".csv", index=False)
-                    elif selected_data == 'Table - Trajectory cells barcodes':
-                        try:
-                            tube_cells_data = pd.read_json(tube_cells)
-                            tube_df = tube_cells_data.loc[tube_cells_data['segment___'] > -1]
-                            indices = [int(i) for i in tube_df.index]
-                            final_df = pd.DataFrame({
-                                'Cell': h5_file.obs.index[indices].tolist(),
-                                'Segment': list(tube_df['segment___'] + 1)})
-                        except:
-                            raise PreventUpdate
+                figure_bytes = fig.to_image(
+                    format=format, scale=scale, width=width, height=height)
+                return dcc.send_bytes(figure_bytes, safe_name + f'.{format}')
 
-                        return dcc.send_data_frame(final_df.to_csv, selected_data + ".csv", index=False)
-                else:
-                    raise PreventUpdate
-        except:
-            raise PreventUpdate
-    else:
+        else:
+            if (data_type == 'h5mu' and modality is not None) or (data_type == 'h5ad'):
+                if selected_data == 'Table - Heatmap expression':
+                    try:
+                        heatmap_data = pd.read_json(heatmap)
+                    except Exception:
+                        raise PreventUpdate
+                    return dcc.send_data_frame(
+                        heatmap_data.iloc[::-1].to_csv, safe_name + '.csv', index=False)
+
+                elif selected_data == 'Table - Trajectory cells barcodes':
+                    try:
+                        tube_cells_data = pd.read_json(tube_cells)
+                        tube_df = tube_cells_data.loc[tube_cells_data['segment___'] > -1]
+                        indices = [int(i) for i in tube_df.index]
+                        final_df = pd.DataFrame({
+                            'Cell': h5_file.obs.index[indices].tolist(),
+                            'Segment': list(tube_df['segment___'] + 1)
+                        })
+                    except Exception:
+                        raise PreventUpdate
+                    return dcc.send_data_frame(
+                        final_df.to_csv, safe_name + '.csv', index=False)
+            else:
+                raise PreventUpdate
+
+    except PreventUpdate:
+        raise
+    except Exception:
+        print(traceback.format_exc())
         raise PreventUpdate
 
 
